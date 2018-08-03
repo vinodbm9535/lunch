@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebViewCommunication</title>
+
+</head>
+<body>
+<p>
+    <textarea rows="5" cols="30" id="input"></textarea>
+</p>
+
+<script src="rollups/aes.js"></script>
+<script src="components/aes.js"></script>
+<script src="components/enc-base64-min.js"></script>
+<script>
+/*<![CDATA[*/
+var user = {
+          "EmailAddress": "",
+          "Password": ""
+      };
+
+function encryptData(email, password) {
+          this.user.EmailAddress = email;
+          this.user.Password = password;
+          console.log(JSON.stringify(this.user));
+          const key = keyGenerator();
+          const cryptData = CryptoJS.AES.encrypt(JSON.stringify(this.user), key).toString();
+          const wordArray = CryptoJS.enc.Utf8.parse(cryptData.slice(0, 10) + key + cryptData.slice(10));
+          const base64 = CryptoJS.enc.Base64.stringify(wordArray);
+          return encodeURIComponent(base64);
+}
+////////////////////////////////////////////////Sign up////////////////////////////////////////
+
+
+     var userSignUp = {
+          "FirstName": "abc11",
+          "LastName": "xyz11",
+          "EmailAddress": "hirshit.sm@gmail.com",
+          "Phone": "1334257890",
+          "Address1": "Bangal123",
+          "Address2": "",
+          "City": "Bangalore",
+          "State" : "1",
+          "Zip": "560040"
+      };
+
+function encryptData() {
+
+          console.log(JSON.stringify(this.userSignUp));
+          const key = keyGenerator();
+          const cryptData = CryptoJS.AES.encrypt(JSON.stringify(this.userSignUp), key).toString();
+          const wordArray = CryptoJS.enc.Utf8.parse(cryptData.slice(0, 10) + key + cryptData.slice(10));
+          const base64 = CryptoJS.enc.Base64.stringify(wordArray);
+          return encodeURIComponent(base64);
+}
+/////////////////////////////////////////Signup/////////////////////////////////////////////
+function keyGenerator() {
+          let randomKey = '';
+          const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~!@#$%^&*()_+=?.,<>|\{}[]';
+          for (let i = 0; i < 17; i++) {
+              randomKey += possible.charAt(Math.floor(Math.random() * possible.length));
+          }
+          return randomKey;
+        }
+
+function decryptData(data) {
+          const parsedWordArray = CryptoJS.enc.Base64.parse(decodeURIComponent(data));
+           // console.log('parsedWordArray : ', parsedWordArray);
+          const parsedStr = parsedWordArray.toString(CryptoJS.enc.Utf8);
+           // console.log('parsedStr : ', parsedStr);
+          const cryptCode = parsedStr.slice(0, 10) + parsedStr.slice(27);
+        //  console.log("Start From", parsedStr.slice(0, 10));
+          const key = parsedStr.slice(10, 27);
+          console.log('Key :  ', key);
+          //  console.log('cryptCode :  ', cryptCode);
+          const bytes = CryptoJS.AES.decrypt(cryptCode, key);
+        //  console.log('bytes: ', bytes);
+          //bytes.toString(CryptoJS.enc.Utf8)
+       //   console.log('bytes.toString(CryptoJS.enc.Utf8): ', bytes.toString(CryptoJS.enc.Utf8));
+          return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+        }
+
+/*]]>*/
+
+    </script>
+</body>
+</html>
